@@ -89,6 +89,15 @@ def train(args):
             total_loss = content_loss + style_loss
             total_loss.backward()
             optimizer.step()
+            
+            sys.stdout.write(
+                            "\r[Epoch %d/%d] [Batch %d/%d]"
+                            % (
+                                e + 1,
+                                args.epochs,
+                                batch_id,
+                                len(train_loader))
+                        )
 
             agg_content_loss += content_loss.item()
             agg_style_loss += style_loss.item()
