@@ -42,7 +42,7 @@ class TransformerNet(torch.nn.Module):
 
         # https://github.com/lengstrom/fast-style-transfer/blob/master/src/transform.py
         y = self.tan(y)*150
-        y = self.tan(y)*150 + 255./2
+        # y = self.tan(y)*150 + 255./2
         return y
 
 
