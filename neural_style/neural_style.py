@@ -27,7 +27,9 @@ def check_paths(args):
         print(e)
         sys.exit(1)
 
-
+# https://github.com/eriklindernoren/Fast-Neural-Style-Transfer
+# https://github.com/gordicaleksa/pytorch-nst-feedforward/
+# https://github.com/lengstrom/fast-style-transfer
 def train(args):
     device = torch.device("cuda" if args.cuda else "cpu")
 
@@ -89,7 +91,7 @@ def train(args):
             total_loss = content_loss + style_loss
             total_loss.backward()
             optimizer.step()
-            
+
             sys.stdout.write(
                             "\r[Epoch %d/%d] [Batch %d/%d]"
                             % (
@@ -204,15 +206,15 @@ def main():
                                   help="set it to 1 for running on GPU, 0 for CPU")
     train_arg_parser.add_argument("--seed", type=int, default=42,
                                   help="random seed for training")
-    train_arg_parser.add_argument("--content-weight", type=float, default=1e5,
-                                  help="weight for content-loss, default is 1e5")
-    train_arg_parser.add_argument("--style-weight", type=float, default=1e10,
-                                  help="weight for style-loss, default is 1e10")
+    train_arg_parser.add_argument("--content-weight", type=float, default=1,
+                                  help="weight for content-loss, default is 1")
+    train_arg_parser.add_argument("--style-weight", type=float, default=5e5,
+                                  help="weight for style-loss, default is 1e5")
     train_arg_parser.add_argument("--lr", type=float, default=1e-3,
                                   help="learning rate, default is 1e-3")
     train_arg_parser.add_argument("--log-interval", type=int, default=500,
                                   help="number of images after which the training loss is logged, default is 500")
-    train_arg_parser.add_argument("--checkpoint-interval", type=int, default=2000,
+    train_arg_parser.add_argument("--checkpoint-interval", type=int, default=1000,
                                   help="number of batches after which a checkpoint of the trained model will be created")
 
     eval_arg_parser = subparsers.add_parser("eval", help="parser for evaluation/stylizing arguments")
