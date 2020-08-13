@@ -41,7 +41,8 @@ class TransformerNet(torch.nn.Module):
         y = self.deconv3(y)
 
         # https://github.com/lengstrom/fast-style-transfer/blob/master/src/transform.py
-        y = self.tan(y)*150
+        y = self.tan(self.relu(y))*150
+        # y = self.tan(y)*150
         # y = self.tan(y)*150 + 255./2
         return y
 
