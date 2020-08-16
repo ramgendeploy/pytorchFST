@@ -53,6 +53,11 @@ def train(args):
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size)
 
     transformer = TransformerNet().to(device)
+
+    # Load checkpoint model if specified
+    if args.checkpoint_model:
+        transformer.load_state_dict(torch.load(args.checkpoint_model))
+
     optimizer = Adam(transformer.parameters(), args.lr)
     mse_loss = torch.nn.MSELoss()
 
@@ -210,6 +215,9 @@ def main():
                                        "containing another folder with all the training images")
     train_arg_parser.add_argument("--style-image", type=str, default="images/style-images/mosaic.jpg",
                                   help="path to style-image")
+    
+    train_arg_parser.add_argument("--checkpoint_model", type=str, help="Optional path to checkpoint model")
+
     train_arg_parser.add_argument("--save-model-dir", type=str, required=True,
                                   help="path to folder where trained model will be saved.")
     train_arg_parser.add_argument("--checkpoint-model-dir", type=str, default=None,
