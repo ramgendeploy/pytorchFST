@@ -18,7 +18,7 @@ def save_image(filename, data):
     img.save(filename)
 
 def parse_image(data):
-    img = data.clone().clamp(0, 255).numpy()
+    img = data.cpu().clone().clamp(0, 255).numpy()
     img = img.transpose(1, 2, 0).astype("uint8")
     img = Image.fromarray(img)
     return img
