@@ -17,6 +17,11 @@ def save_image(filename, data):
     img = Image.fromarray(img)
     img.save(filename)
 
+def parse_image(img):
+    img = data.clone().clamp(0, 255).numpy()
+    img = img.transpose(1, 2, 0).astype("uint8")
+    img = Image.fromarray(img)
+    return img
 
 def gram_matrix(y):
     (b, ch, h, w) = y.size()
@@ -24,7 +29,10 @@ def gram_matrix(y):
     features_t = features.transpose(1, 2)
     gram = features.bmm(features_t) / (ch * h * w)
     return gram
-
+def total_variation(img_batch):
+    batch_size = img_batch.shape[0]
+    return (torch.sum(torch.abs(img_batch[:, :, :, :-1] - img_batch[:, :, :, 1:])) +
+            torch.sum(torch.abs(img_batch[:, :, :-1, :] - img_batch[:, :, 1:, :]))) / batch_size
 
 def normalize_batch(batch):
     # normalize using imagenet mean and std

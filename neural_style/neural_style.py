@@ -16,6 +16,13 @@ import utils
 from transformer_net import TransformerNet
 from vgg import Vgg16
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from google.colab.patches import cv2_imshow
+%matplotlib inline
+mpl.rcParams['figure.figsize'] = (15,15)
+mpl.rcParams['axes.grid'] = False
+
 
 def check_paths(args):
     try:
@@ -87,8 +94,12 @@ def train(args):
                 gm_y = utils.gram_matrix(ft_y)
                 style_loss += mse_loss(gm_y, gm_s[:n_batch, :, :])
             style_loss *= args.style_weight
+            
+            tv_loss = args.tv_weight * utils.total_variation(y)
 
-            total_loss = content_loss + style_loss
+            total_loss = content_loss + style_loss + tv_loss
+
+
             total_loss.backward()
             optimizer.step()
 
@@ -112,6 +123,10 @@ def train(args):
                                   (agg_content_loss + agg_style_loss) / (batch_id + 1)
                 )
                 print(mesg)
+                to_show = parse_image(y)
+                
+                plt.title(f"Results epoch: {e + 1}")
+                plt.imshow(to_show)
 
             if args.checkpoint_model_dir is not None and (batch_id + 1) % args.checkpoint_interval == 0:
                 transformer.eval().cpu()
@@ -206,6 +221,8 @@ def main():
                                   help="set it to 1 for running on GPU, 0 for CPU")
     train_arg_parser.add_argument("--seed", type=int, default=42,
                                   help="random seed for training")
+    train_arg_parser.add_argument("--tv-weight", type=float, default=1,
+                                  help="weight for tv-loss, default is 1")
     train_arg_parser.add_argument("--content-weight", type=float, default=1,
                                   help="weight for content-loss, default is 1")
     train_arg_parser.add_argument("--style-weight", type=float, default=5e5,
