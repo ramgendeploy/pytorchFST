@@ -19,7 +19,7 @@ from vgg import Vgg16
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from google.colab.patches import cv2_imshow
-%matplotlib inline
+
 mpl.rcParams['figure.figsize'] = (15,15)
 mpl.rcParams['axes.grid'] = False
 
@@ -114,7 +114,7 @@ def train(args):
 
             agg_content_loss += content_loss.item()
             agg_style_loss += style_loss.item()
-            
+
             if (batch_id + 1) % args.log_interval == 0:
                 mesg = "{}\tEpoch {}:\t[{}/{}]\tcontent: {:.6f}\tstyle: {:.6f}\ttotal: {:.6f}".format(
                     time.ctime(), e + 1, count, len(train_dataset),
