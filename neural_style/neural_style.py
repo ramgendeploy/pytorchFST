@@ -115,6 +115,13 @@ def train(args):
             agg_content_loss += content_loss.item()
             agg_style_loss += style_loss.item()
 
+
+
+
+            to_show = utils.parse_image(y)
+            
+            plt.title(f"Results epoch: {e + 1}")
+            plt.imshow(to_show)
             if (batch_id + 1) % args.log_interval == 0:
                 mesg = "{}\tEpoch {}:\t[{}/{}]\tcontent: {:.6f}\tstyle: {:.6f}\ttotal: {:.6f}".format(
                     time.ctime(), e + 1, count, len(train_dataset),
