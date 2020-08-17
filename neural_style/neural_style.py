@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision import transforms
 import torch.onnx
+from random import randint
 
 import utils
 from transformer_net import TransformerNet
@@ -39,6 +40,7 @@ def check_paths(args):
 # https://github.com/lengstrom/fast-style-transfer
 def train(args):
     device = torch.device("cuda" if args.cuda else "cpu")
+    train_id = randint(0,999)
 
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -136,14 +138,14 @@ def train(args):
 
             if args.checkpoint_model_dir is not None and (batch_id + 1) % args.checkpoint_interval == 0:
                 transformer.eval().cpu()
-                ckpt_model_filename = "ckpt_epoch_" + str(e) + "_batch_id_" + str(batch_id + 1) + ".pth"
+                ckpt_model_filename = str(train_id)+"ckpt_epoch_" + str(e) + "_batch_id_" + str(batch_id + 1) + ".pth"
                 ckpt_model_path = os.path.join(args.checkpoint_model_dir, ckpt_model_filename)
                 torch.save(transformer.state_dict(), ckpt_model_path)
                 transformer.to(device).train()
 
     # save model
     transformer.eval().cpu()
-    save_model_filename = "epoch_" + str(args.epochs) + "_" + str(time.ctime()).replace(' ', '_') + "_" + str(
+    save_model_filename = str(train_id)+"epoch_" + str(args.epochs) + "_" + str(time.ctime()).replace(' ', '_') + "_" + str(
         args.content_weight) + "_" + str(args.style_weight) + ".model"
     save_model_path = os.path.join(args.save_model_dir, save_model_filename)
     torch.save(transformer.state_dict(), save_model_path)
